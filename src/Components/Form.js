@@ -1,6 +1,8 @@
-import React, {useState} from 'react';
+import React, {useState,useEffect} from 'react';
 import pizzaPhoto from '../pizzaPhoto.jpg';
 import styled from 'styled-components';
+import axios from 'axios';
+import * as yup from 'yup';
 
 const DivH1= styled.div`
     display:flex;
@@ -33,6 +35,39 @@ const Form = () => {
         specialInstructions:""
     })
 
+    const [errors,setErrors]= useState(false);
+
+    const [isDisabled,setIsDisabled] = useState(true);
+
+    // inputChange fuction 
+    const handleChanges = (e) => {
+        setFormState({...formState,[e.target.name]:e.target.type==='checkbox' ? e.target.checked : e.target.value})
+    }
+    // useEffect to change button
+
+    useEffect(()=>{
+        formSchema.isValid(formState).then(valid => setIsDisabled(!valid))
+    },[formState])
+
+    //submitForm function 
+    const submitForm = (e)=>{
+        e.preventDefault();
+        axios.post("https://reqres.in/api/users",formState)
+        .then(resp=>{
+            console.log(resp)
+        })
+    }
+    //formSchema
+    const formSchema = yup.object().shape({
+        name:yup.string().required('Name is required').min(2,'That is not a valid input')
+    })
+
+    //validate changes 
+
+    const validate = (e) =>{
+        console.log(e)
+    }
+
     return (
         <div>
             <DivH1>
@@ -50,6 +85,7 @@ const Form = () => {
                             type="text"
                             id="name"
                             name="name"
+                            data-cy="name"
                         />
                     </label><br/>
                     <label>
@@ -58,6 +94,7 @@ const Form = () => {
                             id="size" 
                             name="size" 
                             defaultValue="small" 
+                            data-cy="size"
                         >
                             <option 
                                 data-cy="small" 
@@ -107,7 +144,7 @@ const Form = () => {
                     <label><h3>Special Instructions</h3>
                     <textarea name="specialInstructions" data-cy="specialInstructions"placeholder="Please add any special instructions" value={formState.specialInstructions}></textarea>
                 </label><br/>
-                <button type="submit">Order Your Pizza</button>
+                <button type="submit" disabled={isDisabled}>Order Your Pizza</button>
                 </form>
             </div>
         </div>
