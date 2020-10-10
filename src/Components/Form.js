@@ -130,7 +130,7 @@ const Form = () => {
                         <h3>Special Instructions</h3>
                         <textarea name="specialInstructions" data-cy="specialInstructions" placeholder="Enter Special Instructions" onChange={handleChanges}/>
                     </label><br/>
-                    <button type="submit" disabled={isDisabled}>Order Your Pizza</button>
+                    <button type="submit" data-cy="submit" disabled={isDisabled}>Order Your Pizza</button>
                     <pre>{JSON.stringify(order, null, 2)}</pre>
                 </form>
             </div>
