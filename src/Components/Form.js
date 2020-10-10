@@ -79,28 +79,30 @@ const Form = () => {
                     </label><br/>
                     <label>
                         <h3>Toppings</h3>
-                        <select 
-                            id="toppings" 
-                            name="toppings" 
-                            defaultValue="peppers" 
-                        >
-                            <option 
-                                data-cy="peppers" 
-                                value="peppers">Peppers
-                            </option>
-                            <option 
-                                data-cy="onions" 
-                                value="onions">Onions
-                            </option>
-                            <option 
-                                data-cy="pepperoni" 
-                                value="pepperoni">Pepperoni
-                            </option>
-                            <option 
-                                data-cy="chicken" 
-                                value="chicken">Chicken
-                            </option>
-                        </select>
+                        <input 
+                            type="checkbox"
+                            name="peppers"
+                            data-cy="peppers"
+                        />
+                        Peppers<br/>
+                        <input 
+                            type="checkbox"
+                            name="onions"
+                            data-cy="onions"
+                        />
+                        Onions<br/>
+                        <input 
+                            type="checkbox"
+                            name="pepperoni"
+                            data-cy="pepperoni"
+                        />
+                        Pepperoni<br/>
+                        <input 
+                            type="checkbox"
+                            name="chicken"
+                            data-cy="chicken"
+                        />
+                        Chicken<br/>
                     </label><br/>
                     <label><h3>Special Instructions</h3>
                     <textarea name="specialInstructions" data-cy="specialInstructions"placeholder="Please add any special instructions" value={formState.specialInstructions}></textarea>
