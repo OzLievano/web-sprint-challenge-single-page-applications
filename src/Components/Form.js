@@ -35,13 +35,24 @@ const Form = () => {
         specialInstructions:""
     })
 
-    const [errors,setErrors]= useState(false);
+    const [errors,setErrors]= useState({
+        name:""
+    });
 
     const [isDisabled,setIsDisabled] = useState(true);
 
     // inputChange fuction 
     const handleChanges = (e) => {
-        setFormState({...formState,[e.target.name]:e.target.type==='checkbox' ? e.target.checked : e.target.value})
+        if(e.target.type==='checkbox'){
+            setFormState({...formState,toppings:{
+                ...formState.additions,[e.target.value]:e.target.checked
+            }})
+        }else{
+            setFormState({...formState,[e.target.name]:e.target.value})
+        }if (e.target.name==="name"){
+            validate(e)
+        }
+
     }
     // useEffect to change button
 
@@ -54,7 +65,7 @@ const Form = () => {
         e.preventDefault();
         axios.post("https://reqres.in/api/users",formState)
         .then(resp=>{
-            console.log(resp)
+            console.log(formState)
         })
     }
     //formSchema
@@ -65,7 +76,10 @@ const Form = () => {
     //validate changes 
 
     const validate = (e) =>{
-        console.log(e)
+        e.persist()
+        yup.reach(formSchema,e.target.name).validate(e.target.value)
+        .then(valid => setErrors({...errors,[e.target.name]:''}))
+        .catch(err => setErrors({...errors,[e.target.name]:err.errors[0]}))
     }
 
     return (
@@ -77,7 +91,7 @@ const Form = () => {
                 <img src={pizzaPhoto} alt="myPizza"/>
             </div>
             <div className="form-container">
-                <form>
+                <form onSubmit={submitForm}>
                 <h3>Build Your Own Pizza</h3><br/>
                     <label htmlFor="name">
                         <h3>Full Name</h3>
@@ -86,6 +100,7 @@ const Form = () => {
                             id="name"
                             name="name"
                             data-cy="name"
+                            onChange={handleChanges}
                         />
                     </label><br/>
                     <label>
@@ -95,6 +110,7 @@ const Form = () => {
                             name="size" 
                             defaultValue="small" 
                             data-cy="size"
+                            onChange={handleChanges}
                         >
                             <option 
                                 data-cy="small" 
@@ -120,33 +136,41 @@ const Form = () => {
                             type="checkbox"
                             name="peppers"
                             data-cy="peppers"
+                            value="peppers"
                         />
                         Peppers<br/>
                         <input 
                             type="checkbox"
                             name="onions"
                             data-cy="onions"
+                            value="onions"
+                            onChange={handleChanges}
                         />
                         Onions<br/>
                         <input 
                             type="checkbox"
                             name="pepperoni"
                             data-cy="pepperoni"
+                            value="pepperoni"
+                            onChange={handleChanges}
                         />
                         Pepperoni<br/>
                         <input 
                             type="checkbox"
                             name="chicken"
                             data-cy="chicken"
+                            value="chicken"
+                            onChange={handleChanges}
                         />
                         Chicken<br/>
                     </label><br/>
                     <label><h3>Special Instructions</h3>
-                    <textarea name="specialInstructions" data-cy="specialInstructions"placeholder="Please add any special instructions" value={formState.specialInstructions}></textarea>
+                    <textarea name="specialInstructions" data-cy="specialInstructions" placeholder="Please add any special instructions" value={formState.specialInstructions} onChange={handleChanges}></textarea>
                 </label><br/>
                 <button type="submit" disabled={isDisabled}>Order Your Pizza</button>
                 </form>
             </div>
+            <pre>{JSON.stringify(formState, null, 2)}</pre>
         </div>
     )
 }
