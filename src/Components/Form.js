@@ -1,7 +1,9 @@
-import React, {useState,useEffect} from 'react';
+import React, {useState,useEffect,useHistory} from 'react';
 import pizzaPhoto from '../pizzaPhoto.jpg';
 import styled from 'styled-components';
+import {Link} from 'react-router-dom';
 import axios from 'axios';
+import Confirmation from './Confirmation'
 import * as yup from 'yup';
 
 const DivH1= styled.div`
@@ -18,6 +20,9 @@ const divH4 = styled.div`
 
 
 const Form = () => {
+
+    
+
     const [formState, setFormState] = useState({
         name:"",
         size:{
@@ -39,13 +44,21 @@ const Form = () => {
         name:""
     });
 
+    function goToConfirm(){
+        return(
+            <Link to ="/pizza-form/confirmation"/>
+        )
+    }
+
+    const [order,setOrder] = useState([])
+
     const [isDisabled,setIsDisabled] = useState(true);
 
     // inputChange fuction 
     const handleChanges = (e) => {
         if(e.target.type==='checkbox'){
             setFormState({...formState,toppings:{
-                ...formState.additions,[e.target.value]:e.target.checked
+                ...formState.toppings,[e.target.value]:e.target.checked
             }})
         }else{
             setFormState({...formState,[e.target.name]:e.target.value})
@@ -56,23 +69,20 @@ const Form = () => {
     }
     // useEffect to change button
 
-    useEffect(()=>{
-        formSchema.isValid(formState).then(valid => setIsDisabled(!valid))
-    },[formState])
-
     //submitForm function 
     const submitForm = (e)=>{
         e.preventDefault();
         axios.post("https://reqres.in/api/users",formState)
         .then(resp=>{
-            console.log(formState)
+           setOrder(resp.data)
         })
+        .catch(err => console.log(err))
     }
-    //formSchema
-    const formSchema = yup.object().shape({
-        name:yup.string().required('Name is required').min(2,'That is not a valid input')
-    })
 
+    useEffect(()=>{
+        formSchema.isValid(formState).then(valid => setIsDisabled(!valid))
+    },[formState])
+    
     //validate changes 
 
     const validate = (e) =>{
@@ -82,95 +92,48 @@ const Form = () => {
         .catch(err => setErrors({...errors,[e.target.name]:err.errors[0]}))
     }
 
+    //formSchema
+    const formSchema = yup.object().shape({
+        name:yup.string().required('Name is required').min(2,'That is not a valid input')
+    })
+
     return (
         <div>
-            <DivH1>
-                <h1>Build Your Own Pizza</h1>
-            </DivH1>
+            <DivH1><h1>Build Your Own Pizza</h1></DivH1>
             <div className="img-container">
-                <img src={pizzaPhoto} alt="myPizza"/>
+                <img src={pizzaPhoto} alt="orderup"/>
             </div>
             <div className="form-container">
                 <form onSubmit={submitForm}>
-                <h3>Build Your Own Pizza</h3><br/>
-                    <label htmlFor="name">
-                        <h3>Full Name</h3>
-                        <input 
-                            type="text"
-                            id="name"
-                            name="name"
-                            data-cy="name"
-                            onChange={handleChanges}
-                        />
+                    <h3>Order Pizza</h3>
+                    <label htmlFor="name"><h3>Name:</h3>
+                        <input id="name" name="name" type="text" value={formState.name} placeholder="Enter your name" 
+                        onChange={handleChanges} data-cy="name"/>
                     </label><br/>
-                    <label>
-                        <h3>Pizza Size</h3>
-                        <select 
-                            id="size" 
-                            name="size" 
-                            defaultValue="small" 
-                            data-cy="size"
-                            onChange={handleChanges}
-                        >
-                            <option 
-                                data-cy="small" 
-                                value="small">Small
-                            </option>
-                            <option 
-                                data-cy="medium" 
-                                value="medium">Medium
-                            </option>
-                            <option 
-                                data-cy="large" 
-                                value="large">Large
-                            </option>
-                            <option 
-                                data-cy="xLarge" 
-                                value="xLarge">X-Large
-                            </option>
-                        </select>
+                    <label htmlFor="size"> 
+                    <h3>Pizza Size:</h3>
+                        <select name="size" id="size" data-cy="size" defaultValue="small" onChange={handleChanges}>
+                            <option value="small">Small</option>
+                            <option value="medium">Medium</option>
+                            <option value="large">Large</option>
+                            <option value="xLarge">XLarge</option>
+                        </select><br/>
                     </label><br/>
-                    <label>
+                    <label> 
                         <h3>Toppings</h3>
-                        <input 
-                            type="checkbox"
-                            name="peppers"
-                            data-cy="peppers"
-                            value="peppers"
-                        />
-                        Peppers<br/>
-                        <input 
-                            type="checkbox"
-                            name="onions"
-                            data-cy="onions"
-                            value="onions"
-                            onChange={handleChanges}
-                        />
-                        Onions<br/>
-                        <input 
-                            type="checkbox"
-                            name="pepperoni"
-                            data-cy="pepperoni"
-                            value="pepperoni"
-                            onChange={handleChanges}
-                        />
-                        Pepperoni<br/>
-                        <input 
-                            type="checkbox"
-                            name="chicken"
-                            data-cy="chicken"
-                            value="chicken"
-                            onChange={handleChanges}
-                        />
-                        Chicken<br/>
+                        <label><input type="checkbox" name="peppers" data-cy="peppers" onChange={handleChanges} value="peppers" />Peppers</label>
+                        <label><input type="checkbox" name="onions" data-cy="onions" onChange={handleChanges} value="onions"/>Onions</label>
+                        <label><input type="checkbox" name="pepperoni" data-cy="pepperoni" onChange={handleChanges} value="pepperoni"/>Pepperoni</label>
+                        <label><input type="checkbox" name="chicken" data-cy="chicken" onChange={handleChanges} value="chicken"/>Chicken</label>
                     </label><br/>
-                    <label><h3>Special Instructions</h3>
-                    <textarea name="specialInstructions" data-cy="specialInstructions" placeholder="Please add any special instructions" value={formState.specialInstructions} onChange={handleChanges}></textarea>
-                </label><br/>
-                <button type="submit" disabled={isDisabled}>Order Your Pizza</button>
+                    <label>
+                        <h3>Special Instructions</h3>
+                        <textarea name="specialInstructions" data-cy="specialInstructions" placeholder="Enter Special Instructions" onChange={handleChanges}/>
+                    </label><br/>
+                    <button type="submit" disabled={isDisabled}>Order Your Pizza</button>
+                    <pre>{JSON.stringify(order, null, 2)}</pre>
                 </form>
             </div>
-            <pre>{JSON.stringify(formState, null, 2)}</pre>
         </div>
     )
 }

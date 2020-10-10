@@ -10,6 +10,7 @@ const App = () => {
     <div className="App">
       <NavBar/>
       <Switch>
+        <Route path="/pizza-form/:orderid" render={()=><Confirmation/>}/>
         <Route path="/pizza-form" render={()=><Form/>}/>
         <Route exact path="/" render={()=><Home/>}/>
       </Switch>
