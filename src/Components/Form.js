@@ -10,6 +10,11 @@ const DivH1= styled.div`
     margin-top:3%;
 `;
 
+const divH4 = styled.div`
+    background-color:'pink';
+`;
+
+
 const Form = () => {
     const [formState, setFormState] = useState({
         name:"",
@@ -35,6 +40,73 @@ const Form = () => {
             </DivH1>
             <div className="img-container">
                 <img src={pizzaPhoto} alt="myPizza"/>
+            </div>
+            <div className="form-container">
+                <form>
+                <h3>Build Your Own Pizza</h3><br/>
+                    <label htmlFor="name">
+                        <h3>Full Name</h3>
+                        <input 
+                            type="text"
+                            id="name"
+                            name="name"
+                        />
+                    </label><br/>
+                    <label>
+                        <h3>Pizza Size</h3>
+                        <select 
+                            id="size" 
+                            name="size" 
+                            defaultValue="small" 
+                        >
+                            <option 
+                                data-cy="small" 
+                                value="small">Small
+                            </option>
+                            <option 
+                                data-cy="medium" 
+                                value="medium">Medium
+                            </option>
+                            <option 
+                                data-cy="large" 
+                                value="large">Large
+                            </option>
+                            <option 
+                                data-cy="xLarge" 
+                                value="xLarge">X-Large
+                            </option>
+                        </select>
+                    </label><br/>
+                    <label>
+                        <h3>Toppings</h3>
+                        <select 
+                            id="toppings" 
+                            name="toppings" 
+                            defaultValue="peppers" 
+                        >
+                            <option 
+                                data-cy="peppers" 
+                                value="peppers">Peppers
+                            </option>
+                            <option 
+                                data-cy="onions" 
+                                value="onions">Onions
+                            </option>
+                            <option 
+                                data-cy="pepperoni" 
+                                value="pepperoni">Pepperoni
+                            </option>
+                            <option 
+                                data-cy="chicken" 
+                                value="chicken">Chicken
+                            </option>
+                        </select>
+                    </label><br/>
+                    <label><h3>Special Instructions</h3>
+                    <textarea name="specialInstructions" data-cy="specialInstructions"placeholder="Please add any special instructions" value={formState.specialInstructions}></textarea>
+                </label><br/>
+                <button type="submit">Order Your Pizza</button>
+                </form>
             </div>
         </div>
     )

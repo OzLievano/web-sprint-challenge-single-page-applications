@@ -19,3 +19,10 @@ code {
 .img-container img{
   width:75%;
 }
+
+.form-container{
+  display:flex;
+  margin-top: 3%;
+  margin-left: 5%;
+  justify-content: flex-start
+}
