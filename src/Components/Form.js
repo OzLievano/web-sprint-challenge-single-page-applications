@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-
+import pizzaPhoto from '../pizzaPhoto.jpg';
 import styled from 'styled-components';
 
 const DivH1= styled.div`
@@ -29,9 +29,14 @@ const Form = () => {
     })
 
     return (
-        <DivH1>
-            <h1>Build Your Own Pizza</h1>
-        </DivH1>
+        <div>
+            <DivH1>
+                <h1>Build Your Own Pizza</h1>
+            </DivH1>
+            <div className="img-container">
+                <img src={pizzaPhoto} alt="myPizza"/>
+            </div>
+        </div>
     )
 }
 
